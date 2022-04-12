@@ -10,6 +10,6 @@ First build from top of simplePyAPI director:
 Second install:
 
 ```bash
-pip install dist\*.whl
+pip install dist/*.whl
 ```
 

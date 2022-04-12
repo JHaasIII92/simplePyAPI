@@ -7,10 +7,10 @@ print(exampleAPI.__doc__)
 print(exampleAPI.pycAdd(1.0, 1.0))
 
 
-uData = {"TestString":"This is James from Python"}
+uData = {"TestString":"This is from Python!"}
 
-def myCallBack(uData):
-
+def myCallBack(cData, uData):
+    print(cData)
     print(uData["TestString"])
     return 0
 

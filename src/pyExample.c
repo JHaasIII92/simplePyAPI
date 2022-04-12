@@ -82,7 +82,8 @@ PyObject *pyPassFunc(PyObject *self, PyObject *args)
             return NULL;
         }
 
-    arglist = Py_BuildValue("(O)", passData);
+    char str[] = "This is from C!";
+    arglist = Py_BuildValue("(sO)",str, passData);
     result = PyEval_CallObject(passFunc, arglist);
 
     return Py_BuildValue("O", result);

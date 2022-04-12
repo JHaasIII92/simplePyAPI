@@ -5,16 +5,21 @@
 
 PyObject *pycAdd(PyObject *self, PyObject *args);
 PyObject *pyPassFunc(PyObject *self, PyObject *args);
+PyObject *pySetCallBack(PyObject *self, PyObject *args);
+PyObject *pyCallBack(PyObject *self, PyObject *args);
 
 PyMODINIT_FUNC PyInit_examplAPI(void);
 
 static PyObject *ExampleAPIError;
-
+static PyObject *my_callback = NULL;
+static PyObject *uData = NULL;
 
 static PyMethodDef example_methods[] = 
 {
     {"pycAdd", pycAdd, METH_VARARGS},
     {"pyPassFunc", pyPassFunc, METH_VARARGS},
+    {"pySetCallBack", pySetCallBack, METH_VARARGS},
+    {"pyCallBack", pyCallBack, METH_VARARGS},
     {NULL, NULL, 0, NULL}        /* Sentinel */ 
 };
 
@@ -89,3 +94,51 @@ PyObject *pyPassFunc(PyObject *self, PyObject *args)
     return Py_BuildValue("O", result);
 }
 
+
+// static PyObject *my_callback = NULL;
+// static PyObject *uData = NULL;
+
+// PyObject *pySetCallBack(PyObject *self, PyObject *args);
+// PyObject *pyCallBack(PyObject *self, PyObject *args);
+
+PyObject *pySetCallBack(PyObject *self, PyObject *args) 
+{
+    PyObject *result    = NULL;
+    PyObject *passFunc  = NULL;
+    PyObject *passData  = NULL;
+
+    if (PyArg_ParseTuple(args, "OO", &passFunc,&passData))
+    {
+        if (!PyCallable_Check(passFunc)) 
+        {
+            PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+            return NULL;
+        }
+            Py_XINCREF(passFunc);     /* Add a reference to new callback */
+            Py_XDECREF(my_callback);  /* Dispose of previous callback */
+            my_callback = passFunc;   /* Remember new callback */
+
+            Py_XINCREF(passData);   /* Add a reference to new callback */
+            Py_XDECREF(uData);      /* Dispose of previous callback */
+            uData = passData;       /* Remember new callback */
+
+            /* Boilerplate to return "None" */
+            Py_INCREF(Py_None);
+            result = Py_None;
+        }
+
+    return result;
+}
+
+
+PyObject *pyCallBack(PyObject *self, PyObject *args)
+{
+    PyObject *arglist = NULL;
+    PyObject *result    = NULL;
+
+    char str[] = "This is from C!";
+    arglist = Py_BuildValue("(sO)",str, uData);
+    result = PyEval_CallObject(my_callback, arglist);
+
+    return Py_BuildValue("O", result);
+}

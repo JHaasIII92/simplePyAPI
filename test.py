@@ -15,4 +15,7 @@ def myCallBack(cData, uData):
     return 0
 
 
-exampleAPI.pyPassFunc(myCallBack, uData)
+exampleAPI.pySetCallBack(myCallBack, uData)
+
+for i in range(1,10):
+    exampleAPI.pyCallBack()
